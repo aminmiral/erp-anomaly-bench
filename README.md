@@ -74,6 +74,8 @@ Temporal split (train 216 / test 93, 17 anomalous). AUPRC per anomaly type;
 | audit_rules | 0.423 | 1.0 | 1.0 | 1.000 | 0.026 | 0.095 | 0.026 |
 | variant_freq | 0.375 | 1.0 | 1.0 | 0.013 | 0.026 | 0.095 | 0.026 |
 | markov_nll | 0.375 | 1.0 | 1.0 | 0.013 | 0.026 | 0.095 | 0.026 |
+| dae (deep) | 0.479 | 1.0 | 1.0 | 0.024 | 0.026 | 0.129 | 0.258 |
+| binet_lite (deep) | 0.443 | 1.0 | 1.0 | 0.250 | 0.027 | 0.124 | 0.020 |
 
 Adding **context features** (`*_ctx` methods: same outlier models over time-of-day
 features plus ±14-day requester×vendor cross-trace windows — see
@@ -103,6 +105,13 @@ Findings:
    floor), and context has a cost — `iforest_ctx` drops from 1.000 to 0.200
    on crude overbilling as added features dilute the bill-to-PO signal,
    pointing at per-type specialization/ensembling as future work.
+6. **Feature scope beats model capacity.** Deep single-trace sequence models
+   (`dae`, `binet_lite` — autoencoder and next-event-prediction families from
+   the BPAD survey, implemented in `erpbench/bench/deep.py`) land mid-pack:
+   perfect on sequence-changing frauds, mostly blind to the hard tier, and
+   ~0.5 overall AUPRC behind a plain Isolation Forest that can see
+   cross-trace context. Caveat: lite implementations, 216 training traces —
+   the claim is scoped to this benchmark, not deep methods at large.
 
 ## Roadmap
 
@@ -110,7 +119,8 @@ Findings:
 - [x] In-Odoo rule auditor (`addons/erpbench_audit`) as demo layer + rule baseline
 - [x] Benchmark harness (`erpbench.bench`): 6 baseline detectors, temporal
       leakage-safe splits, per-anomaly-type AUPRC — `python -m erpbench.bench.run data/<log>.csv`
-- [ ] BPAD deep methods (DAE, BINet, GAMA, ...) as additional registry entries
+- [x] Deep single-trace methods (`dae`, `binet_lite` — DAE/BINet families, torch)
+- [ ] Full-scale BPAD methods (GAMA, WAKE, ...) via the upstream repo
 - [ ] Real per-role Odoo users so role anomalies are enforced by the ERP itself
 - [ ] More typologies: split purchases under approval thresholds, off-hours activity
 - [ ] XES export (pm4py) + dataset variants (sizes / anomaly rates)

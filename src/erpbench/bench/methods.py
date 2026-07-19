@@ -124,7 +124,7 @@ class AuditRules:
 
 def registry() -> dict[str, object]:
     from .features import context_features
-    return {
+    entries = {
         "audit_rules": AuditRules(),
         "variant_freq": VariantFrequency(),
         "markov_nll": MarkovNLL(),
@@ -141,3 +141,10 @@ def registry() -> dict[str, object]:
             OneClassSVM(nu=0.1, gamma="scale"),
             features=context_features),
     }
+    try:  # deep single-trace methods require torch (CPU build is fine)
+        from .deep import BINetLite, DAEDetector
+        entries["dae"] = DAEDetector()
+        entries["binet_lite"] = BINetLite()
+    except ImportError:
+        pass
+    return entries

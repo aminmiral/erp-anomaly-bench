@@ -173,11 +173,20 @@ current selection as an argument**, even on `@api.model` methods — hence
   differ — e.g. control-flow methods are structurally blind to `price_overbill`
   (the sequence is normal; only an amount is wrong).
 
+- `deep.py` — deep single-trace detectors mirroring two BPAD-survey families:
+  `dae` (autoencoder over the encoded padded trace; score = reconstruction
+  error) and `binet_lite` (GRU next-activity predictor conditioned on event
+  attributes; score = mean NLL of the observed continuation). Both see
+  per-event attributes (activity, log-amount, hour, weekday, actor) but no
+  cross-trace context. Registered automatically when torch is importable
+  (CPU build suffices; traces are 4-7 events, training takes seconds).
+  Headline result: both land mid-pack — feature scope beats model capacity
+  on this benchmark.
+
 ## Roadmap
 
-- **BPAD deep methods**: add the survey's sequence models (DAE, BINet, GAMA, ...)
-  to the registry (requires torch); results per method × anomaly type × dataset
-  variant.
+- Full-scale BPAD methods (GAMA, WAKE, ...) via the upstream repo, and
+  non-lite versions of DAE/BINet at realistic data scale.
 - Subtler typologies rule-based auditing can't catch: split purchases under
   approval thresholds, off-hours timing, collusion patterns.
 - Real per-role Odoo users, so role anomalies exist in (or are blocked by) the
