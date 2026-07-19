@@ -59,8 +59,14 @@ cd src && python -m erpbench.generate ../configs/p2p_small.yaml
 ```
 
 Output: `data/p2p_small.csv` — one row per event with `case_id`, `activity`,
-`timestamp`, `actor`, `role`, `amount`, `doc_ref`, `anomaly_type` (event-level label)
-and `trace_label` (trace-level label).
+`timestamp`, `actor`, `role`, `amount`, `vendor`, `doc_ref`, `anomaly_type`
+(event-level label) and `trace_label` (trace-level label).
+
+Interactive dashboard (ranked suspects, trace drill-down, benchmark charts):
+
+```bash
+cd src && streamlit run dashboard.py
+```
 
 ## Baseline results (v2 dataset: `p2p_hard`, 309 traces, 7 typologies)
 
@@ -124,5 +130,6 @@ Findings:
 - [ ] Full-scale BPAD methods (GAMA, WAKE, ...) via the upstream repo
 - [ ] Real per-role Odoo users so role anomalies are enforced by the ERP itself
 - [ ] More typologies: split purchases under approval thresholds, off-hours activity
+- [x] Paper-style report ([docs/PAPER.md](docs/PAPER.md))
+- [x] Streamlit dashboard (`src/dashboard.py`)
 - [ ] XES export (pm4py) + dataset variants (sizes / anomaly rates)
-- [ ] Paper-style report

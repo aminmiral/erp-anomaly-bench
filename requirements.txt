@@ -6,5 +6,8 @@ tabulate>=0.9
 # Deep methods (optional — registry skips them if absent). CPU build suffices:
 #   pip install torch --index-url https://download.pytorch.org/whl/cpu
 torch>=2.2
+# Dashboard (optional):
+streamlit>=1.36
+matplotlib>=3.8
 # Later phases (dataset export / benchmarking):
 # pm4py>=2.7        # XES export, process mining utilities
