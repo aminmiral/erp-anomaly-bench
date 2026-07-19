@@ -32,6 +32,7 @@ Detection methods are then benchmarked against the dataset, building on the
 | `after_hours` | timing | approval/billing/payment at 1–5 AM (normal activity follows a Mon–Fri 9–18 business-hours clock) |
 
 Full component/wiring walkthrough: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Paper-style report of the dataset, protocol, and findings: [docs/PAPER.md](docs/PAPER.md).
 
 ## Design notes
 
