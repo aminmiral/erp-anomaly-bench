@@ -157,6 +157,16 @@ current selection as an argument**, even on `@api.model` methods — hence
   and the domain `audit_rules` baseline (same controls as the Odoo module, no
   training). Every method implements `fit(train_df)` / `score(test_df) -> Series`;
   BPAD's deep sequence models plug in as further entries once torch is installed.
+- `features.py` — the chapter-two answer to the hard tier: **context features**.
+  Time context (fraction of events off-hours / on weekends) targets
+  `after_hours`; cross-trace context (count, summed-amount-vs-threshold, and
+  near-threshold count of same requester+vendor traces within a ±14-day
+  window) targets `split_purchase`, which is invisible at single-trace scope
+  by construction. The `*_ctx` registry entries are the same outlier models
+  run over this wider scope — so any baseline-vs-context gap in the results
+  is attributable to feature scope, not model choice. The symmetric window
+  models a periodic batch audit; the approval threshold is domain knowledge,
+  on the same footing as the audit baseline's three-way-match rule.
 - `run.py` — CLI runner: fits and scores every method, reports overall ROC-AUC /
   AUPRC plus **AUPRC per anomaly type** (that type vs. normal), and writes
   `results/<log>_results.{csv,md}`. The per-type view is where methods actually

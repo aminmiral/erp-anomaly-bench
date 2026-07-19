@@ -75,17 +75,34 @@ Temporal split (train 216 / test 93, 17 anomalous). AUPRC per anomaly type;
 | variant_freq | 0.375 | 1.0 | 1.0 | 0.013 | 0.026 | 0.095 | 0.026 |
 | markov_nll | 0.375 | 1.0 | 1.0 | 0.013 | 0.026 | 0.095 | 0.026 |
 
-Three findings so far:
+Adding **context features** (`*_ctx` methods: same outlier models over time-of-day
+features plus ±14-day requester×vendor cross-trace windows — see
+`erpbench/bench/features.py`) changes the picture:
+
+| method | overall | subtle_overbill | split_purchase | after_hours |
+|---|---|---|---|---|
+| **iforest_ctx** | **0.947** | 0.303 | **0.970** | **1.000** |
+| ocsvm_ctx | 0.797 | **0.530** | 0.647 | 0.325 |
+| lof_ctx | 0.615 | 0.268 | 0.110 | 1.000 |
+
+Findings:
 
 1. **The easy tier is solved** — document-level rules and feature outlier models
-   both reach 1.0 on anomalies where a single document is visibly wrong.
+   reach 1.0 on anomalies where a single document is visibly wrong.
 2. **Control-flow methods are structurally blind to data/role anomalies**
    (0.013 on crude overbilling): the activity sequence is normal, only an
    amount or actor is wrong.
-3. **The hard tier defeats every baseline.** Cross-trace fraud
-   (`split_purchase`), timing fraud (`after_hours`), and skims hiding inside
-   legitimate billing variation (`subtle_overbill`) all score at or near random
-   for every method — the benchmark's open problem.
+3. **The hard tier defeats every single-trace method** — cross-trace fraud
+   (`split_purchase`), timing fraud (`after_hours`), and in-tolerance skims
+   (`subtle_overbill`) all score at or near random for every baseline.
+4. **Feature scope, not model choice, closes most of the gap**: the same
+   Isolation Forest goes 0.099 → 0.970 on `split_purchase` and 0.043 → 1.000
+   on `after_hours` once it can see context.
+5. **Two open problems remain**: `subtle_overbill` resists everything (best
+   0.530 — skims inside legitimate billing variation may set a detection
+   floor), and context has a cost — `iforest_ctx` drops from 1.000 to 0.200
+   on crude overbilling as added features dilute the bill-to-PO signal,
+   pointing at per-type specialization/ensembling as future work.
 
 ## Roadmap
 

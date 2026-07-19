@@ -54,7 +54,8 @@ class ProcureToPayCase:
         vendor_name, vendor_id = rng.choice(list(self.vendors.items()))
         off = mode == AFTER_HOURS
 
-        po_id, po_total = self._create_po(case_id, requester, vendor_id)
+        po_id, po_total = self._create_po(case_id, requester, vendor_id,
+                                          vendor_name=vendor_name)
         self._confirm_po(case_id, po_id, approver, off_hours=off,
                          anomaly=SELF_APPROVAL if mode == SELF_APPROVAL
                          else AFTER_HOURS if off else "normal")
@@ -99,7 +100,8 @@ class ProcureToPayCase:
             case_id = f"{base_id}-S{part + 1}"
             target = rng.uniform(0.88, 0.99) * APPROVAL_THRESHOLD
             po_id, _ = self._create_po(case_id, requester, vendor_id,
-                                       target_amount=target)
+                                       target_amount=target,
+                                       vendor_name=vendor_name)
             self._confirm_po(case_id, po_id, approver)
             self._receive(case_id, po_id, requester)
             bill_id, billed = self._create_and_post_bill(case_id, po_id, 1.0)
@@ -108,7 +110,8 @@ class ProcureToPayCase:
 
     # ---- individual activities ---------------------------------------
 
-    def _create_po(self, case_id, requester, vendor_id, target_amount=None):
+    def _create_po(self, case_id, requester, vendor_id, target_amount=None,
+                   vendor_name=None):
         lines = []
         if target_amount is not None:
             # target_amount is the tax-INCLUSIVE total (approval thresholds
@@ -139,7 +142,8 @@ class ProcureToPayCase:
                             round(line.price_unit * target_amount / total, 2)})
             total = self.c.env["purchase.order"].browse(po_id).amount_total
         self.log.record(Event(case_id, "Create PO", self.clock.step(), requester,
-                              "requester", amount=total, doc_ref=f"PO/{po_id}"))
+                              "requester", amount=total, doc_ref=f"PO/{po_id}",
+                              vendor=vendor_name))
         return po_id, total
 
     def _confirm_po(self, case_id, po_id, approver, off_hours=False, anomaly="normal"):

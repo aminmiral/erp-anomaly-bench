@@ -67,6 +67,7 @@ class Event:
     role: str
     amount: float | None = None
     doc_ref: str | None = None
+    vendor: str | None = None  # partner on PO/bill events, as a real log would carry
     anomaly_type: str = NORMAL  # event-level label
 
 

@@ -75,20 +75,22 @@ class MarkovNLL:
 
 class FeatureOutlier:
     """Multi-perspective baseline: engineered per-trace features scored by a
-    standard novelty-detection model."""
+    standard novelty-detection model. `features` selects the feature scope —
+    single-trace (default) or context-aware."""
 
-    def __init__(self, estimator):
+    def __init__(self, estimator, features=trace_features):
         self.estimator = estimator
+        self.features = features
         self.scaler = StandardScaler()
 
     def fit(self, train: pd.DataFrame):
-        X = trace_features(train)
+        X = self.features(train)
         self.columns = X.columns
         self.estimator.fit(self.scaler.fit_transform(X))
         return self
 
     def score(self, test: pd.DataFrame) -> pd.Series:
-        X = trace_features(test)[self.columns]
+        X = self.features(test)[self.columns]
         return pd.Series(-self.estimator.score_samples(self.scaler.transform(X)),
                          index=X.index)
 
@@ -121,6 +123,7 @@ class AuditRules:
 
 
 def registry() -> dict[str, object]:
+    from .features import context_features
     return {
         "audit_rules": AuditRules(),
         "variant_freq": VariantFrequency(),
@@ -128,4 +131,13 @@ def registry() -> dict[str, object]:
         "iforest": FeatureOutlier(IsolationForest(n_estimators=200, random_state=0)),
         "lof": FeatureOutlier(LocalOutlierFactor(n_neighbors=10, novelty=True)),
         "ocsvm": FeatureOutlier(OneClassSVM(nu=0.1, gamma="scale")),
+        "iforest_ctx": FeatureOutlier(
+            IsolationForest(n_estimators=200, random_state=0),
+            features=context_features),
+        "lof_ctx": FeatureOutlier(
+            LocalOutlierFactor(n_neighbors=10, novelty=True),
+            features=context_features),
+        "ocsvm_ctx": FeatureOutlier(
+            OneClassSVM(nu=0.1, gamma="scale"),
+            features=context_features),
     }
