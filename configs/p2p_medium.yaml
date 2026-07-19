@@ -1,0 +1,13 @@
+# Benchmark log: 250 traces, ~10% anomalous.
+seed: 7
+start_date: "2025-01-06T09:00:00"
+n_cases: 250
+anomaly_rate: 0.10
+output: data/p2p_medium.csv
+
+odoo:
+  host: localhost
+  port: 8069
+  db: erpbench
+  login: admin
+  password: admin

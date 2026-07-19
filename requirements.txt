@@ -1,0 +1,7 @@
+odoorpc>=0.10
+pandas>=2.0
+pyyaml>=6.0
+scikit-learn>=1.4
+tabulate>=0.9
+# Later phases (dataset export / benchmarking):
+# pm4py>=2.7        # XES export, process mining utilities

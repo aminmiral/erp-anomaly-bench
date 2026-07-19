@@ -1,0 +1,13 @@
+# Small smoke-test log: ~60 traces, ~10% anomalous.
+seed: 42
+start_date: "2025-01-06T09:00:00"
+n_cases: 60
+anomaly_rate: 0.10
+output: data/p2p_small.csv
+
+odoo:
+  host: localhost
+  port: 8069
+  db: erpbench
+  login: admin
+  password: admin

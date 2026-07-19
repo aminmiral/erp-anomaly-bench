@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="audit_finding_view_tree" model="ir.ui.view">
+        <field name="name">audit.finding.tree</field>
+        <field name="model">audit.finding</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="severity == '3'" decoration-warning="severity == '2'">
+                <header>
+                    <button name="action_scan" type="object" string="Rescan"
+                            display="always" class="btn-primary"/>
+                </header>
+                <field name="name"/>
+                <field name="finding_type"/>
+                <field name="severity" widget="badge"
+                       decoration-danger="severity == '3'"
+                       decoration-warning="severity == '2'"/>
+                <field name="po_id"/>
+                <field name="move_id"/>
+                <field name="amount_expected" optional="show"/>
+                <field name="amount_found" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="audit_finding_view_form" model="ir.ui.view">
+        <field name="name">audit.finding.form</field>
+        <field name="model">audit.finding</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <field name="finding_type"/>
+                        <field name="severity"/>
+                        <field name="po_id"/>
+                        <field name="move_id"/>
+                        <field name="amount_expected"/>
+                        <field name="amount_found"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="audit_finding_action" model="ir.actions.act_window">
+        <field name="name">Audit Findings</field>
+        <field name="res_model">audit.finding</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No findings yet</p>
+            <p>Click <b>Rescan</b> to audit all procure-to-pay documents.</p>
+        </field>
+    </record>
+
+    <menuitem id="audit_root_menu" name="Audit" sequence="90"/>
+    <menuitem id="audit_finding_menu" name="Findings" parent="audit_root_menu"
+              action="audit_finding_action" sequence="10"/>
+</odoo>

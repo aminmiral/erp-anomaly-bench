@@ -1,0 +1,14 @@
+# v2 benchmark log: all 7 anomaly typologies (4 easy + 3 hard),
+# business-hours clock, legitimate billing variation on normal traces.
+seed: 11
+start_date: "2025-01-06T09:00:00"
+n_cases: 300
+anomaly_rate: 0.12
+output: data/p2p_hard.csv
+
+odoo:
+  host: localhost
+  port: 8069
+  db: erpbench
+  login: admin
+  password: admin

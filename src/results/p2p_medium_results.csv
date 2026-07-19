@@ -1,0 +1,7 @@
+,roc_auc,auprc,auprc:duplicate_invoice,auprc:price_overbill,auprc:self_approval,auprc:skipped_receipt
+audit_rules,1.0,1.0,1.0,1.0,1.0,1.0
+iforest,1.0,1.0,1.0,1.0,1.0,1.0
+ocsvm,1.0,1.0,1.0,1.0,1.0,1.0
+lof,1.0,1.0,1.0,1.0,1.0,1.0
+variant_freq,0.75,0.553,1.0,0.029,0.029,1.0
+markov_nll,0.75,0.553,1.0,0.029,0.029,1.0
